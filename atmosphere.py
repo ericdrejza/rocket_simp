@@ -1,34 +1,75 @@
+import numpy as np
+
 class Atmosphere:
   """
   The atmosphere class will set parameters for the environment in which the rocket will operate.
   Additional parameters and increasing complexity can be implemented to better simulate real world conditions.
   Units will be metric for consistency.
-
-  Current parameters include:
-  altitude: h
-  density: rho(h)
-  gravity: g(h)
-  pressure: P(h)
-  temperature: T(h)
-  viscosity: mu(h)
   """
 
-  def __init__(self, altitude, density, gravity, pressure, temperature, viscosity):
+  # Example: constant, ideal atmosphere
+
+  def __init__(self, altitude):
+    """
+    :param altitude: h
+    """
     self.altitude = altitude  # m
-    self.density = density  # kg/m^3
-    self.gravity = gravity  # m/s^2
-    self.pressure = pressure  # kg/m/s^2
-    self.temperature = temperature  # C
-    self.viscosity = viscosity  # m^2/s
+    self.density = self.density(altitude)
+    self.gravity = self.gravity(altitude)
+    self.pressure = self.pressure(altitude)
+    self.temperature = self.temperature(altitude)
+    self.viscosity = self.viscosity(altitude)
+
+  def density(self, altitude):
+    """
+    calculates density
+    :param altitude:
+    :return:
+    """
+    rho = 1.225  # kg/m^3
+    return rho
+
+  def gravity(self, altitude):
+    """
+    calculates gravity
+    :param altitude:
+    :return:
+    """
+    g = 9.81  # m/s^2
+    return g
+
+  def pressure(self, altitude):
+    """
+    calculates pressure
+    :param altitude:
+    :return:
+    """
+    P = 101325  # kg/m/s^2
+    return P
+
+  def temperature(self, altitude):
+    """
+    calculates temperature
+    :param altitude:
+    :return:
+    """
+    T = np.arange(15, 0, -15/100)  # C
+    return T
+
+  def viscosity(self, altitude):
+    """
+    calculates viscosity
+    :param altitude:
+    :return:
+    """
+    mu = 1.81 * 10**-5  # m^2/s
+    return mu
 
 
-# Example: constant, ideal atmosphere
-import numpy as np
+def main():
+  h = np.arange(0, 100000, 1000)  # m
+  atmosphere_example = Atmosphere(h)
+  print(__name__)
 
-h = np.arange(0, 100000, 1000)  # m         sea level to the Karman Line (edge of space)
-rho = 1.225                     # kg/m^3    average density of air at sea level
-g = 9.81                        # m/s^2     standard value for gravity
-P = 101325                      # kg/m/s^2  1 atm converted into
-T = np.arange(15, 0, -15/100)   # C         temp at sea level to temp in a vacuum
-mu = 1.81 * 10 ** -5            # m^2/s     average viscosity of air at sea level
-atmosphere_example = Atmosphere(h, rho, g, P, T, mu)
+if __name__ == '__main__':
+  main()
