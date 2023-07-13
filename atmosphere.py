@@ -14,13 +14,13 @@ class Atmosphere:
     :param altitude: h
     """
     self.altitude = altitude  # m
-    self.density = self.density(altitude)
-    self.gravity = self.gravity(altitude)
-    self.pressure = self.pressure(altitude)
-    self.temperature = self.temperature(altitude)
-    self.viscosity = self.viscosity(altitude)
+    self.density = self.calc_density(altitude)
+    self.gravity = self.calc_gravity(altitude)
+    self.pressure = self.calc_pressure(altitude)
+    self.temperature = self.calc_temperature(altitude)
+    self.viscosity = self. calc_viscosity(altitude)
 
-  def density(self, altitude):
+  def calc_density(self, altitude):
     """
     calculates density
     :param altitude:
@@ -29,7 +29,7 @@ class Atmosphere:
     rho = 1.225  # kg/m^3
     return rho
 
-  def gravity(self, altitude):
+  def calc_gravity(self, altitude):
     """
     calculates gravity
     :param altitude:
@@ -38,7 +38,7 @@ class Atmosphere:
     g = 9.81  # m/s^2
     return g
 
-  def pressure(self, altitude):
+  def calc_pressure(self, altitude):
     """
     calculates pressure
     :param altitude:
@@ -47,7 +47,7 @@ class Atmosphere:
     P = 101325  # kg/m/s^2
     return P
 
-  def temperature(self, altitude):
+  def calc_temperature(self, altitude):
     """
     calculates temperature
     :param altitude:
@@ -56,7 +56,7 @@ class Atmosphere:
     T = np.arange(15, 0, -15/100)  # C
     return T
 
-  def viscosity(self, altitude):
+  def calc_viscosity(self, altitude):
     """
     calculates viscosity
     :param altitude:
