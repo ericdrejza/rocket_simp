@@ -1,5 +1,3 @@
-import numpy as np
-
 class Atmosphere:
   """
   The atmosphere class will set parameters for the environment in which the rocket will operate.
@@ -7,69 +5,72 @@ class Atmosphere:
   Units will be metric for consistency.
   """
 
-  # Example: constant, ideal atmosphere
+  # Current Example: constant, simplified atmosphere
+  # Density and viscosity values pulled from sea level at 15C
 
-  def __init__(self, altitude):
+  def __init__(self, altitude: float) -> None:
     """
-    :param altitude: h
+    :param altitude: float
     """
-    self.altitude = altitude  # m
     self.density = self.calc_density(altitude)
     self.gravity = self.calc_gravity(altitude)
     self.pressure = self.calc_pressure(altitude)
     self.temperature = self.calc_temperature(altitude)
-    self.viscosity = self. calc_viscosity(altitude)
+    self.viscosity = self.calc_viscosity(altitude)
 
-  def calc_density(self, altitude):
+
+  def calc_density(self, altitude: float) -> float:
     """
     calculates density
-    :param altitude:
-    :return:
+    :param altitude: float
+    :return: float
     """
-    rho = 1.225  # kg/m^3
-    return rho
+    density = 1.225  # kg/m^3
+    return density
 
-  def calc_gravity(self, altitude):
+
+  def calc_gravity(self, altitude: float) -> float:
     """
     calculates gravity
-    :param altitude:
-    :return:
+    :param altitude: float
+    :return: float
     """
-    g = 9.81  # m/s^2
-    return g
+    gravity = 9.81  # m/s^2
+    return gravity
 
-  def calc_pressure(self, altitude):
+
+  def calc_pressure(self, altitude: float) -> float:
     """
     calculates pressure
-    :param altitude:
-    :return:
+    :param altitude: float
+    :return: float
     """
-    P = 101325  # kg/m/s^2
-    return P
+    pressure = 101325.0  # kg/m/s^2
+    return pressure
 
-  def calc_temperature(self, altitude):
+
+  def calc_temperature(self, altitude: float) -> float:
     """
     calculates temperature
-    :param altitude:
-    :return:
+    :param altitude: float
+    :return: float
     """
-    T = np.arange(15, 0, -15/100)  # C
-    return T
+    temperature = 15.0  # C
+    return temperature
 
-  def calc_viscosity(self, altitude):
+
+  def calc_viscosity(self, altitude: float) -> float:
     """
     calculates viscosity
-    :param altitude:
-    :return:
+    :param altitude: float
+    :return: float
     """
-    mu = 1.81 * 10**-5  # m^2/s
-    return mu
+    viscosity = 1.81 * 10**-5  # m^2/s
+    return viscosity
 
 
 def main():
-  h = np.arange(0, 100000, 1000)  # m
-  atmosphere_example = Atmosphere(h)
-  print(__name__)
+  pass
 
 if __name__ == '__main__':
   main()
