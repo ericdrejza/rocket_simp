@@ -9,7 +9,7 @@ given parameters of the environment, rocket, and potentially others.
 
 # Requirements / Dependencies
 
-requirements.txt will track the required packages for the project.
+<em>requirements.txt</em> will track the required packages for the project.
 
 To install the required packages for this project, from the repo root, run:
   - $ pip3 install -r requirements.txt
