@@ -12,10 +12,10 @@ given parameters of the environment, rocket, and potentially others.
 <strong>requirements.txt</strong> will track the required packages for the project.
 
 To install the required packages for this project, from the repo root, run:
-  - $ pip3 install -r requirements.txt
+  - `$ pip3 install -r requirements.txt`
 
 To update requirements.txt, from the repo root, run:
-  - $ pip3 freeze > requirements.txt
+  - `$ pip3 freeze > requirements.txt`
 
 <hr />
 
