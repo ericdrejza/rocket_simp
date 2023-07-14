@@ -7,7 +7,7 @@ given parameters of the environment, rocket, and potentially others.
 
 <hr />
 
-# Requirements / Dependencies
+## Requirements / Dependencies
 
 <strong>requirements.txt</strong> will track the required packages for the project.
 
