@@ -13,9 +13,11 @@ given parameters of the environment, rocket, and potentially others.
 
 To install the required packages for this project, from the repo root, run:
   - `$ pip3 install -r requirements.txt`
+    - Be sure to do this while in your virtual environment
 
 To update requirements.txt, from the repo root, run:
   - `$ pip3 freeze > requirements.txt`
+    - Be sure to do this while in your virtual environment and have all packages installed that you want update the requirements.txt with
 
 <hr />
 
