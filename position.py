@@ -6,6 +6,7 @@ class Position(ABC):
     pass
 
 
+
 class PositionCartesian(Position):
   """
   This class represents a position using the cartesian coordinate system
@@ -18,6 +19,11 @@ class PositionCartesian(Position):
     super().__init__(*args)
     self.x = args[0]
     self.y = args[1]
+
+
+  def __str__(self) -> str:
+    return f'({self.x}, {self.y})'
+  
 
 
 class PositionSpherical(Position):
@@ -33,3 +39,6 @@ class PositionSpherical(Position):
     self.r = args[0]
     self.theta = args[1]
 
+
+  def __str__(self) -> str:
+    return f'({self.r}, {self.theta})'
