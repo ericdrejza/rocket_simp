@@ -10,7 +10,7 @@ given parameters of the environment, rocket, and potentially others.
 Tests are kept in the tests/ directory.
 
 Tests can be run individually using:
-    * $ python3 -m unittest <`test path`>
+  - $ python3 -m unittest <`test path`>
 
 All tests can be run using:
-    * $ python3 -m unittest discover <`tests directory path`>
+  - $ python3 -m unittest discover <`tests directory path`>
