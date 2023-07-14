@@ -55,6 +55,8 @@ class CoordinateSystemSpherical(CoordinateSystem):
     return CoordinateSystemSpherical.createPosition(r, theta)
 
 
+
+### MAIN ###
 def main():
   spherical_position = CoordinateSystemSpherical.createPosition(5, 0.2)
   cartesian_position = CoordinateSystemCartesian.createPositionFromSpherical(spherical_position)
