@@ -4,7 +4,7 @@ from astropy.coordinates import cartesian_to_spherical
 from astropy.coordinates import spherical_to_cartesian
 from astropy.units import Quantity
 
-from position import Position, PositionCartesian, PositionSpherical
+from src.position import Position, PositionCartesian, PositionSpherical
 # from vector import Vector
 
 
