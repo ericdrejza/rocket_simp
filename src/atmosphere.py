@@ -70,6 +70,17 @@ def calc_viscosity(altitude: float) -> float:
   return viscosity
 
 
+  def update_atmosphere(self, altitude: float) -> None:
+    """
+    :param altitude: float
+    """
+    self.density = self.calc_density(altitude)
+    self.gravity = self.calc_gravity(altitude)
+    self.pressure = self.calc_pressure(altitude)
+    self.temperature = self.calc_temperature(altitude)
+    self.viscosity = self.calc_viscosity(altitude)
+
+
 def main():
   pass
 
