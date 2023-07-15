@@ -1,25 +1,25 @@
 import unittest
 
-from src.coordinate_system import CoordinateSystemCartesian
-from src.coordinate_system import CoordinateSystemSpherical
+from src.coordinate_system import CartesianCoordinateSystem
+from src.coordinate_system import SphericalCoordinateSystem
 
-from src.position import PositionCartesian, PositionSpherical
+from src.position import CartesianPosition, SphericalPosition
 
 
-class TestCoordinateSystemCartesian(unittest.TestCase):
+class TestCartesianCoordinateSystem(unittest.TestCase):
   
   def test_create_position_cartesian(self):
-    position = CoordinateSystemCartesian.createPosition(0, 0)
-    self.assertIsInstance(position, PositionCartesian,
-      "Did not create an instance of PositionCartesian")
+    position = CartesianCoordinateSystem.createPosition(0, 0)
+    self.assertIsInstance(position, CartesianPosition,
+      "Did not create an instance of CartesianPosition")
   
 
-class TestCoordinateSystemSpherical(unittest.TestCase):
+class TestSphericalCoordinateSystem(unittest.TestCase):
   
   def test_create_position_spherical(self):
-    position = CoordinateSystemSpherical.createPosition(0, 0)
-    self.assertIsInstance(position, PositionSpherical,
-      "Did not create an instance of PositionSpherical")
+    position = SphericalCoordinateSystem.createPosition(0, 0)
+    self.assertIsInstance(position, SphericalPosition,
+      "Did not create an instance of SphericalPosition")
 
 
 if __name__ == '__main__':

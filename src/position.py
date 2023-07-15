@@ -7,14 +7,14 @@ class Position(ABC):
 
 
 
-class PositionCartesian(Position):
+class CartesianPosition(Position):
   """
   This class represents a position using the cartesian coordinate system
   """
   
   def __init__(self, *args) -> None:
     """
-    Initializer for PositionCartesian
+    Initializer for CartesianPosition
     """
     super().__init__(*args)
     self.x = args[0]
@@ -26,14 +26,14 @@ class PositionCartesian(Position):
   
 
 
-class PositionSpherical(Position):
+class SphericalPosition(Position):
   """
   This class represents a position using the spherical coordinate system
   """
   
   def __init__(self, *args) -> None:
     """
-    Initializer for PositionSpherical
+    Initializer for SphericalPosition
     """
     super().__init__(*args)
     self.r = args[0]

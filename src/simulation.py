@@ -1,14 +1,14 @@
 import numpy as np
 
 from coordinate_system import CoordinateSystem
-from coordinate_system import CoordinateSystemCartesian
+from coordinate_system import CartesianCoordinateSystem
 
 
 class Simulation:
   
   def __init__(self,
     rocket_component,
-    coordinate_system:CoordinateSystem=CoordinateSystemCartesian,
+    coordinate_system: CoordinateSystem=CartesianCoordinateSystem,
     time_max=100,
     time_step=1) -> None:
     
@@ -43,7 +43,7 @@ def main():
   # rocket_component = RocketComponentHead(args)
 
   # Choose coordinate system
-  coordinate_system = CoordinateSystemCartesian
+  coordinate_system = CartesianCoordinateSystem
 
   # Create Simulation
   # simulation = Simulation(rocket_component, coordinate_system)

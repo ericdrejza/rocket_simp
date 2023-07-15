@@ -4,7 +4,7 @@ from astropy.coordinates import cartesian_to_spherical
 from astropy.coordinates import spherical_to_cartesian
 from astropy.units import Quantity
 
-from src.position import Position, PositionCartesian, PositionSpherical
+from src.position import Position, CartesianPosition, SphericalPosition
 # from vector import Vector
 
 
@@ -22,49 +22,49 @@ class CoordinateSystem(ABC):
 
 
 
-class CoordinateSystemCartesian(CoordinateSystem):
+class CartesianCoordinateSystem(CoordinateSystem):
   def __init__(self) -> None:
     super().__init__()
 
 
-  def createPosition(x, y) -> PositionCartesian:
-    return PositionCartesian(x, y)
+  def createPosition(x, y) -> CartesianPosition:
+    return CartesianPosition(x, y)
   
 
-  def createPositionFromSpherical(spherical_position: PositionSpherical):
+  def createPositionFromSpherical(spherical_position: SphericalPosition):
     x, y, z = spherical_to_cartesian(
       spherical_position.r, 0, spherical_position.theta)
     
-    return CoordinateSystemCartesian.createPosition(x, y)
+    return CartesianCoordinateSystem.createPosition(x, y)
 
 
 
-class CoordinateSystemSpherical(CoordinateSystem):
+class SphericalCoordinateSystem(CoordinateSystem):
   def __init__(self) -> None:
     super().__init__()
 
 
-  def createPosition(r, theta) -> PositionSpherical:
-    return PositionSpherical(r, theta)
+  def createPosition(r, theta) -> SphericalPosition:
+    return SphericalPosition(r, theta)
 
 
-  def createPositionFromCartesian(cartesian_position: PositionCartesian):
+  def createPositionFromCartesian(cartesian_position: CartesianPosition):
     r, theta, psi = cartesian_to_spherical(
       cartesian_position.x, 0, cartesian_position.y)
     
-    return CoordinateSystemSpherical.createPosition(r, theta)
+    return SphericalCoordinateSystem.createPosition(r, theta)
 
 
 
 ### MAIN ###
 def main():
-  spherical_position = CoordinateSystemSpherical.createPosition(5, 0.2)
-  cartesian_position = CoordinateSystemCartesian.createPositionFromSpherical(spherical_position)
+  spherical_position = SphericalCoordinateSystem.createPosition(5, 0.2)
+  cartesian_position = CartesianCoordinateSystem.createPositionFromSpherical(spherical_position)
 
   print(cartesian_position)
 
 
-  spherical_position_2 = CoordinateSystemSpherical.createPositionFromCartesian(cartesian_position)
+  spherical_position_2 = SphericalCoordinateSystem.createPositionFromCartesian(cartesian_position)
 
   print(spherical_position)
   print(spherical_position_2)
