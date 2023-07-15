@@ -24,7 +24,7 @@ To update requirements.txt, from the repo root, run:
 ## Unit Tests
 Tests are kept in the tests/ directory.
 
-Before running any unittest command cd into the repo root.
+Before attempting to run the unit tests, cd into the repo root:
   - `$ cd .../rocket_simp`
 
 Tests can be run individually using:
