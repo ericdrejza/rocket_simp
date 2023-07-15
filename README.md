@@ -24,9 +24,12 @@ To update requirements.txt, from the repo root, run:
 ## Unit Tests
 Tests are kept in the tests/ directory.
 
+Before running any unittest command cd into the repo root.
+  - `$ cd .../rocket_simp`
+
 Tests can be run individually using:
   - `$ python3 -m unittest <test path>`
 
 All tests can be run using:
+  - `$ python3 -m unittest`
   - `$ python3 -m unittest discover <tests directory path>`
-  - `$ cd <tests directory path>; python3 -m unittest`
