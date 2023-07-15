@@ -1,12 +1,9 @@
 import unittest
-import sys
 
-sys.path.append('../')
+from src.coordinate_system import CoordinateSystemCartesian
+from src.coordinate_system import CoordinateSystemSpherical
 
-from coordinate_system import CoordinateSystemCartesian
-from coordinate_system import CoordinateSystemSpherical
-
-from position import PositionCartesian, PositionSpherical
+from src.position import PositionCartesian, PositionSpherical
 
 
 class TestCoordinateSystemCartesian(unittest.TestCase):
@@ -22,7 +19,7 @@ class TestCoordinateSystemSpherical(unittest.TestCase):
   def test_create_position_spherical(self):
     position = CoordinateSystemSpherical.createPosition(0, 0)
     self.assertIsInstance(position, PositionSpherical,
-      "Did not create an instance of PositionCartesian")
+      "Did not create an instance of PositionSpherical")
 
 
 if __name__ == '__main__':
