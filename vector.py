@@ -15,7 +15,7 @@ class Vector:
     self.magnitude = value
     self.angle = alpha
     self.direction = np.sign(value)
-    self.x_component = value*math.cos(alpha)
+    self.x_component = value * math.cos(alpha)
     self.y_component = value * math.sin(alpha)
 
 
