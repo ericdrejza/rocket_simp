@@ -32,7 +32,7 @@ class Rocket:
     self.lift_force = self.calc_lift_force()  # N
     self.thrust_force = self.calc_thrust_force()  # N
 
-    #Atmosphere Object
+    # Atmosphere Object
     self.atmosphere = Atmosphere(self.altitude)
 
 
