@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from astropy.coordinates import cartesian_to_spherical
 from astropy.coordinates import spherical_to_cartesian
 
-from src.position import Position, CartesianPosition, SphericalPosition
+from position import Position, CartesianPosition, SphericalPosition
 # from vector import Vector
 
 
@@ -96,18 +96,7 @@ class SphericalCoordinateSystem(CoordinateSystem):
 
 ### MAIN ###
 def main():
-  spherical_position = SphericalCoordinateSystem.createPosition(5, 0.2)
-  cartesian_position = CartesianCoordinateSystem.createPositionFromSpherical(spherical_position)
-
-  print(cartesian_position)
-
-
-  spherical_position_2 = SphericalCoordinateSystem.createPositionFromCartesian(cartesian_position)
-
-  print(spherical_position)
-  print(spherical_position_2)
-  print(type(spherical_position_2.theta))
-
+  pass
 
 if __name__ == '__main__':
   main()

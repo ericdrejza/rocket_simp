@@ -19,9 +19,6 @@ class CartesianPosition(Position):
   """
   
   def __init__(self, *args) -> None:
-    """
-    Initializer for CartesianPosition
-    """
     super().__init__(*args)
     self.x = args[0]
     self.y = args[1]
@@ -41,9 +38,6 @@ class SphericalPosition(Position):
   """
   
   def __init__(self, *args) -> None:
-    """
-    Initializer for SphericalPosition
-    """
     super().__init__(*args)
     self.r = args[0]
     self.theta = args[1]
@@ -51,3 +45,12 @@ class SphericalPosition(Position):
 
   def __str__(self) -> str:
     return f'({self.r}, {self.theta})'
+  
+
+  def get_altitude(self):
+    """
+    Calculate the vertical distance
+
+    :return float: The vertical distance of the position
+    """
+    return self.r * math.sin(self.theta)
