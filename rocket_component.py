@@ -2,7 +2,7 @@ from atmosphere import Atmosphere
 import math
 
 
-class Rocket:
+class RocketComponent:
   """
   The rocket class will calculate the forces acting upon the rocket component
   at a given time. Units will be metric for consistency.
