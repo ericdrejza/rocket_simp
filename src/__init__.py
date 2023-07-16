@@ -20,6 +20,5 @@ sys.modules['rocket_log'] = rocket_log
 import src.rocket_component as rocket_component
 sys.modules['rocket_component'] = rocket_component
 
-
 import src.simulation as simulation
 sys.modules['simulation'] = simulation
