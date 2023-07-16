@@ -7,7 +7,7 @@ class Vector:
   create magnitude, direction, and component attributes.
   """
 
-  def __init__(self, value: float, alpha: float) -> None:
+  def __init__(self, magnitude: float, alpha: float) -> None:
     """
     :param value: float
     :param: alpha: float
