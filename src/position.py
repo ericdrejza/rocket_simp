@@ -1,8 +1,14 @@
-from abc import ABC
+from abc import ABC, abstractmethod
+import math
 
 class Position(ABC):
 
   def __init__(self, *args) -> None:
+    pass
+  
+  
+  @abstractmethod
+  def get_altitude(self):
     pass
 
 
@@ -24,6 +30,9 @@ class CartesianPosition(Position):
   def __str__(self) -> str:
     return f'({self.x}, {self.y})'
   
+
+  def get_altitude(self):
+    return self.y
 
 
 class SphericalPosition(Position):
