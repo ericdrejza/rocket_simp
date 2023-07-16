@@ -2,6 +2,7 @@ from abc import ABC
 
 from atmosphere import Atmosphere
 from position import Position
+from rocket_log import RocketLog
 
 
 
@@ -10,6 +11,7 @@ class RocketComponent(ABC):
   def __init__(self, position: Position) -> None:
     self.atmosphere = Atmosphere(self.altitude)
     self.pos = position
+    self.log = RocketLog()
 
 
 
@@ -49,5 +51,5 @@ class RocketComponentDecorator(RocketComponent):
 
     # Remove decorator from self.rocket_component
     self.rocket_component = None
-    
+
     return rocket_component
