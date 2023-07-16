@@ -17,8 +17,8 @@ sys.modules['coordinate_system'] = coordinate_system
 import src.rocket_component as rocket_component
 sys.modules['rocket_component'] = rocket_component
 
-import src.simulation_data as simulation_data
-sys.modules['simulation_data'] = simulation_data
+import src.rocket_log as rocket_log
+sys.modules['rocket_log'] = rocket_log
 
 import src.simulation as simulation
 sys.modules['simulation'] = simulation
