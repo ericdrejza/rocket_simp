@@ -2,7 +2,6 @@ import numpy as np
 
 from coordinate_system import CoordinateSystem
 from coordinate_system import CartesianCoordinateSystem
-from simulation_data import SimulationData
 
 
 class Simulation:
@@ -20,7 +19,6 @@ class Simulation:
     self.time = 0 # unit seconds
     self.time_max = time_max # unit seconds
     self.time_step = time_step # unit: seconds
-    self.sim_data = SimulationData()
   
 
   def update(self):
