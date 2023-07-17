@@ -6,19 +6,19 @@ class RocketLog:
     self.data = pd.DataFrame(columns=[
       'time', # time
       'rocket_component_id', # Unique rocket component identifier
-      'x', # x position
-      'y', # y position
+      'pos_x', # x position
+      'pos_y', # y position
       'velocity_magnitude', # magnitude of velocity
       'velocity_alpha', # angle of velocity
       'velocity_direction', # direction of velocity
       'velocity_x', # x value of velocity
       'velocity_y', # y value of velocity
-      'fuel_mass', # mass of fuel
-      'structure_mass', # mass of structure
-      'drag_force',
-      'gravity_force',
-      'lift_force',
-      'thrust_force',
+      'mass_fuel', # mass of fuel
+      'mass_structure', # mass of structure
+      'force_drag',
+      'force_gravity',
+      'force_lift',
+      'force_thrust',
       'atmosphere_density',
       'atmosphere_gravity',
       'atmosphere_pressure',
