@@ -13,11 +13,7 @@ class Atmosphere:
     """
     :param float altitude: current section of the atmosphere to calculate data for
     """
-    self.density = calc_density(altitude)  # kg/m^3
-    self.gravity = calc_gravity(altitude)  # m/s^2
-    self.pressure = calc_pressure(altitude)  # N/m^2
-    self.temperature = calc_temperature(altitude)  # C
-    self.viscosity = calc_viscosity(altitude)  # N*s/m^2
+    self.update_atmosphere(altitude)
 
 
   def update_atmosphere(self, altitude: float) -> None:
