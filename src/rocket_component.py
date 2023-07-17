@@ -6,7 +6,6 @@ from position import Position
 from rocket_log import RocketLog
 
 
-
 class RocketComponent(ABC):
   
   def __init__(self, position: Position) -> None:
