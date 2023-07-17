@@ -9,14 +9,14 @@ class Vector:
 
   def __init__(self, magnitude: float, alpha: float) -> None:
     """
-    :param value: float
-    :param: alpha: float
+    :param float magnitude: magnitude of the vector
+    :param float alpha: angle of the vector
     """
-    self.magnitude = value
+    self.magnitude = magnitude
     self.angle = alpha
-    self.direction = np.sign(value)
-    self.x_component = value * math.cos(alpha)
-    self.y_component = value * math.sin(alpha)
+    self.direction = np.sign(magnitude)
+    self.x_component = magnitude * math.cos(alpha)
+    self.y_component = magnitude * math.sin(alpha)
 
 
 def main():

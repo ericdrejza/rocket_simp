@@ -11,7 +11,7 @@ class Atmosphere:
 
   def __init__(self, altitude: float) -> None:
     """
-    :param altitude: current section of the atmosphere to calculate data for
+    :param float altitude: current section of the atmosphere to calculate data for
     """
     self.density = calc_density(altitude)  # kg/m^3
     self.gravity = calc_gravity(altitude)  # m/s^2
@@ -23,8 +23,8 @@ class Atmosphere:
 def calc_density(altitude: float) -> float:
   """
   calculates density
-  :param altitude: height
-  :return: density
+  :param float altitude: altitude to calc density at
+  :return float: density
   """
   density = 1.225  # kg/m^3
   return density
@@ -33,8 +33,8 @@ def calc_density(altitude: float) -> float:
 def calc_gravity(altitude: float) -> float:
   """
   calculates gravity
-  :param altitude: height
-  :return: gravity
+  :param float altitude: altitude to calc gravity at
+  :return float: gravity
   """
   gravity = 9.81  # m/s^2
   return gravity
@@ -43,8 +43,8 @@ def calc_gravity(altitude: float) -> float:
 def calc_pressure(altitude: float) -> float:
   """
   calculates pressure
-  :param altitude: height
-  :return: pressure
+  :param float altitude: altitude to calc pressure at
+  :return float: pressure
   """
   pressure = 101325.0  # kg/m/s^2
   return pressure
@@ -53,8 +53,8 @@ def calc_pressure(altitude: float) -> float:
 def calc_temperature(altitude: float) -> float:
   """
   calculates temperature
-  :param altitude: height
-  :return: temperature
+  :param float altitude: altitude to calc temperature at
+  :return float: temperature
   """
   temperature = 15.0  # C
   return temperature
@@ -63,8 +63,8 @@ def calc_temperature(altitude: float) -> float:
 def calc_viscosity(altitude: float) -> float:
   """
   calculates viscosity
-  :param altitude: height
-  :return: viscosity
+  :param float altitude: altitude to calc viscosity at
+  :return float: viscosity
   """
   viscosity = 1.81 * 10**-5  # m^2/s
   return viscosity

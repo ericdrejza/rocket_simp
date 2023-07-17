@@ -36,20 +36,20 @@ class RocketComponent:
     self.atmosphere = Atmosphere(self.altitude)
 
 
-  def calc_mass(self) -> float:
+  def calc_mass(self, time_step) -> float:
     """
     calculate total mass of the system
-    :return: mass of the rocket at a point in time
+    :return float: mass of the rocket at a point in time
     """
-    
-    mass = self.mass_structure + self.mass_fuel - (self.mass_flow_rate * time_step)
+
+    mass = self.mass_structure + self.mass_fuel - (self.fuel_flow_rate * time_step)
     return mass
 
 
   def calc_drag_force(self) -> float:
     """
     calculate the drag force acting on the rocket
-    :return: drag
+    :return float: drag
     """
 
     drag_coefficient = 0.75  # approximation, replace later
@@ -61,19 +61,19 @@ class RocketComponent:
   def calc_gravity_force(self) -> float:
     """
     calculate the gravitational force acting on the rocket
-    :return: float
+    :return float: gravity
     """
     gravitational_constant = 6.674 * 10**-11  # m^3/kg*s
     mass_earth = 5.9722 * 10**24  # kg
     radius_earth = 6.371 * 10**6  # m
-    gravity_force = gravitational_constant * mass_earth * self.calc_mass() / (radius_earth + self.altitude**2)
+    gravity_force = gravitational_constant * mass_earth * self.calc_mass(1) / (radius_earth + self.altitude**2)
     return gravity_force
 
 
   def calc_lift_force(self) -> float:
     """
     calculate the lift force acting on the rocket
-    :return: lift
+    :return float: lift
     """
 
     lift_coefficient = 1.5 #approximation, replace later, assume vertical launch
@@ -85,10 +85,10 @@ class RocketComponent:
   def calc_thrust_force(self) -> float:
     """
     calculate the thrust force acting on the rocket
-    :return: thrust
+    :return float: thrust
     """
 
-    momentum_thrust = self.mass_flow_rate * self.velocity_exhaust
+    momentum_thrust = self.fuel_flow_rate * self.velocity_exhaust
     pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * self.area_exhaust
     thrust_force = momentum_thrust + pressure_thrust
 
