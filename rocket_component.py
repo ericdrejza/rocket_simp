@@ -18,7 +18,7 @@ class RocketComponent:
 
     # Mass Properties (Falcon 9 ex.)
     self.mass_fuel = 375000  # kg
-    self.mass_flow_rate = 1450  # kg/s
+    self.fuel_flow_rate = 1450  # kg/s
     self.mass_structure = 25000  # kg
 
     # Engine Properties
