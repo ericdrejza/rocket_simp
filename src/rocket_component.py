@@ -1,20 +1,19 @@
-from atmosphere import Atmosphere
+from abc import ABC
 import math
 
+from atmosphere import Atmosphere
+from position import Position
+from rocket_log import RocketLog
 
-class RocketComponent:
-  """
-  The rocket class will calculate the forces acting upon the rocket component
-  at a given time. Units will be metric for consistency.
-  """
 
-  def __init__(self) -> None:
-
+class RocketComponent(ABC):
+  
+  def __init__(self, position: Position) -> None:
     # Basic Properties (Falcon 9 ex.)
-    self.altitude = 0  # m
+    self.position = position
     self.length = 70  # m
     self.width = 4  # m
-    self.velocity = 1000  # m/s
+    self.velocity = 0  # m/s
 
     # Mass Properties (Falcon 9 ex.)
     self.mass_fuel = 375000  # kg
@@ -35,7 +34,10 @@ class RocketComponent:
     # Atmosphere Object
     self.atmosphere = Atmosphere(self.altitude)
 
+    # Rocket Log
+    self.log = RocketLog()
 
+  
   def calc_mass(self, time_step) -> float:
     """
     calculate total mass of the system
@@ -93,6 +95,47 @@ class RocketComponent:
     thrust_force = momentum_thrust + pressure_thrust
 
     return thrust_force
+
+
+
+# Concrete Components
+class HeadRocketComponent(RocketComponent):
+
+  def __init__(self, altitude=0) -> None:
+    super().__init__(altitude)
+
+
+
+# Abstract Decorator
+class RocketComponentDecorator(RocketComponent):
+  
+  def __init__(self, rocket_component, altitude=0) -> None:
+    super().__init__(altitude)
+    self.rocket_component = rocket_component
+
+
+  def set_rocket_component(self, rocket_component: 'RocketComponent') -> None:
+    """
+    Set the rocket component
+
+    :param RocketComponent rocket_component: The rocket component to be coupled with self
+    """
+    self.rocket_component = rocket_component
+
+  
+  def decouple_rocket_component(self) -> RocketComponent:
+    """
+    Represent the decoupling of two rocket components
+
+    :return RocketComponent: The RocketComponent that this object decorates
+    """
+    # Save off RocketComponent to return
+    rocket_component = self.rocket_component
+
+    # Remove decorator from self.rocket_component
+    self.rocket_component = None
+
+    return rocket_component
 
 
 def main():
