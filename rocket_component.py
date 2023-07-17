@@ -41,7 +41,7 @@ class RocketComponent:
     calculate total mass of the system
     :return: mass of the rocket at a point in time
     """
-    time_step = 1
+    
     mass = self.mass_structure + self.mass_fuel - (self.mass_flow_rate * time_step)
     return mass
 
