@@ -8,11 +8,11 @@ class RocketLog:
       'rocket_component_id', # Unique rocket component identifier
       'x', # x position
       'y', # y position
-      'v_magnitude', # magnitude of velocity
-      'v_alpha', # angle of velocity
-      'v_direction', # direction of velocity
-      'v_x', # x value of velocity
-      'v_y', # y value of velocity
+      'velocity_magnitude', # magnitude of velocity
+      'velocity_alpha', # angle of velocity
+      'velocity_direction', # direction of velocity
+      'velocity_x', # x value of velocity
+      'velocity_y', # y value of velocity
       'fuel_mass', # mass of fuel
       'structure_mass', # mass of structure
       'drag_force',
