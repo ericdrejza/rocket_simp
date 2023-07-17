@@ -19,9 +19,9 @@ class RocketLog:
       'force_gravity',
       'force_lift',
       'force_thrust',
-      'atmosphere_density',
-      'atmosphere_gravity',
-      'atmosphere_pressure',
-      'atmosphere_temperature',
-      'atmosphere_viscosity'
+      'atm_density',
+      'atm_gravity',
+      'atm_pressure',
+      'atm_temperature',
+      'atm_viscosity'
     ])
