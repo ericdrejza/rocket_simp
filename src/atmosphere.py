@@ -20,6 +20,17 @@ class Atmosphere:
     self.viscosity = calc_viscosity(altitude)  # N*s/m^2
 
 
+  def update_atmosphere(self, altitude: float) -> None:
+    """
+    :param altitude: float
+    """
+    self.density = self.calc_density(altitude)
+    self.gravity = self.calc_gravity(altitude)
+    self.pressure = self.calc_pressure(altitude)
+    self.temperature = self.calc_temperature(altitude)
+    self.viscosity = self.calc_viscosity(altitude)
+
+
 def calc_density(altitude: float) -> float:
   """
   calculates density
@@ -70,17 +81,8 @@ def calc_viscosity(altitude: float) -> float:
   return viscosity
 
 
-  def update_atmosphere(self, altitude: float) -> None:
-    """
-    :param altitude: float
-    """
-    self.density = self.calc_density(altitude)
-    self.gravity = self.calc_gravity(altitude)
-    self.pressure = self.calc_pressure(altitude)
-    self.temperature = self.calc_temperature(altitude)
-    self.viscosity = self.calc_viscosity(altitude)
 
-
+### MAIN ###
 def main():
   pass
 
