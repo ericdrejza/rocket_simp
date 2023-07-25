@@ -1,56 +1,54 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 import math
 
 class Position(ABC):
 
   def __init__(self, *args) -> None:
     pass
-  
-  
-  @abstractmethod
-  def get_altitude(self):
-    pass
 
 
-
-class CartesianPosition(Position):
+class CartPosition(Position):
   """
   This class represents a position using the cartesian coordinate system
   """
-  
+
   def __init__(self, *args) -> None:
     super().__init__(*args)
     self.x = args[0]
     self.y = args[1]
 
 
-  def __str__(self) -> str:
-    return f'({self.x}, {self.y})'
-  
+  def cart_to_sphere(self):
+    """
+    Converts cartesian coordinates to spherical coordinates
+    :return float r: distance from the origin to the point
+    :return float theta: angle from the origin to the point
+    """
 
-  def get_altitude(self):
-    return self.y
+    r = math.sqrt(self.x ** 2 + self.y ** 2)
+    theta = math.tan(self.y / self.x)
+    return r, theta
 
 
-class SphericalPosition(Position):
+class SpherePosition(Position):
   """
   This class represents a position using the spherical coordinate system
   """
-  
+
+
   def __init__(self, *args) -> None:
     super().__init__(*args)
     self.r = args[0]
     self.theta = args[1]
 
 
-  def __str__(self) -> str:
-    return f'({self.r}, {self.theta})'
-  
-
-  def get_altitude(self):
+  def sphere_to_cart(self):
     """
-    Calculate the vertical distance
-
-    :return float: The vertical distance of the position
+    Converts spherical coordinates to cartesian coordinates
+    :return float x: distance along the x-axis
+    :return float y: distance along the y-axis
     """
-    return self.r * math.sin(self.theta)
+
+    x = self.r * math.cos(self.theta)
+    y = self.r * math.sin(self.theta)
+    return x, y
