@@ -7,7 +7,7 @@ class Position(ABC):
     pass
 
 
-class CartPosition(Position):
+class CartesianPosition(Position):
   """
   This class represents a position using the cartesian coordinate system
   """
@@ -30,7 +30,7 @@ class CartPosition(Position):
     return r, theta
 
 
-class SpherePosition(Position):
+class SphericalPosition(Position):
   """
   This class represents a position using the spherical coordinate system
   """

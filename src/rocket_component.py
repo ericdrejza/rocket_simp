@@ -2,7 +2,7 @@ from abc import ABC
 import math
 
 from atmosphere import Atmosphere
-from position import Position
+from position import CartPosition
 from rocket_log import RocketLog
 from vector import Vector
 import scipy.integrate as integrate
@@ -10,15 +10,13 @@ import scipy.integrate as integrate
 
 class RocketComponent(ABC):
   
-  def __init__(self, alpha, x, y, v) -> None:
+  def __init__(self, alpha: float, position: CartPosition, velocity: Vector) -> None:
     super().__init__()
 
     # Position
-    self.position = Position
     self.alpha = alpha  # radians
-    self.x_position = x  # m
-    self.y_position = y  # m
-    self.velocity = v
+    self.position = position  # m
+    self.velocity = velocity
 
     # Mass Properties (Falcon 9 ex.)
     self.mass_fuel = 375000  # kg
@@ -39,7 +37,7 @@ class RocketComponent(ABC):
     self.thrust_force = self.calc_thrust_force()  # N
 
     # Atmosphere Object
-    self.atmosphere = Atmosphere(self.y_position)
+    self.atmosphere = Atmosphere(self.position_y)
 
     # Rocket Log
     self.log = RocketLog()
@@ -65,7 +63,7 @@ class RocketComponent(ABC):
 
     drag_coefficient = 0.75  # approximation, replace later
     drag_area = math.pi * (self.width / 2)**2
-    drag = drag_coefficient * self.atmosphere.density * drag_area * self.velocity ** 2 / 2
+    drag = drag_coefficient * self.atmosphere.density * drag_area * self.velocity.r ** 2 / 2
     return Vector.from_spherical(drag, self.alpha + math.pi)
 
 
@@ -77,7 +75,7 @@ class RocketComponent(ABC):
     gravitational_constant = 6.674 * 10**-11  # m^3/kg*s
     mass_earth = 5.9722 * 10**24  # kg
     radius_earth = 6.371 * 10**6  # m
-    gravity = gravitational_constant * mass_earth * self.calc_mass(1) / (radius_earth + self.y_position**2)
+    gravity = gravitational_constant * mass_earth * self.calc_mass(1) / (radius_earth + self.position.y**2)
     return Vector.from_spherical(gravity, 3 * math.pi / 2)
 
 
@@ -89,7 +87,7 @@ class RocketComponent(ABC):
 
     lift_coefficient = 1.5 #approximation, replace later, assume vertical launch
     lift_area = self.length * self.width
-    lift = lift_coefficient * self.atmosphere.density * lift_area * self.velocity ** 2 / 2
+    lift = lift_coefficient * self.atmosphere.density * lift_area * self.velocity.r ** 2 / 2
     return Vector.from_spherical(lift, math.pi/2 + self.alpha)
 
 
@@ -101,8 +99,8 @@ class RocketComponent(ABC):
 
     momentum_thrust = self.fuel_flow_rate * self.velocity_exhaust
     pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * self.area_exhaust
-    thrust_force = momentum_thrust + pressure_thrust
-    return Vector.from_spherical(thrust_force, self.alpha)
+    thrust = momentum_thrust + pressure_thrust
+    return Vector.from_spherical(thrust, self.alpha)
 
 
   def sum_forces(self) -> Vector:
@@ -125,11 +123,11 @@ class RocketComponent(ABC):
     :return Vector acceleration: new acceleration of the rocket after timestep
     """
 
-    mass = self.calc_mass(time_step)
-    a_x = force.x / mass
-    a_y = force.y / mass
+    a_x = force.x / self.mass
+    a_y = force.y / self.mass
 
     return Vector(a_x, a_y)
+
 
   def calc_new_velocity(self, acceleration: Vector, time_step: float) -> Vector:
     """
@@ -139,10 +137,11 @@ class RocketComponent(ABC):
     :return Vector velocity: new velocity of the rocket after timestep
     """
 
-    v_x = acceleration.x * time_step
-    v_y = acceleration.y * time_step
+    v_x = self.velocity.x + acceleration.x * time_step
+    v_y = self.velocity.y + acceleration.y * time_step
 
     return Vector(v_x, v_y)
+
 
   def calc_new_position(self, velocity: Vector, time_step: float) -> Vector:
     """
@@ -152,10 +151,11 @@ class RocketComponent(ABC):
     :return float position: new position of the rocket after timestep
     """
 
-    p_x = velocity.x * time_step
-    p_y = velocity.y * time_step
+    p_x = self.position.x + velocity.x * time_step
+    p_y = self.position.y + velocity.y * time_step
 
     return Vector(p_x, p_y)
+
 
 # Concrete Components
 class HeadRocketComponent(RocketComponent):
