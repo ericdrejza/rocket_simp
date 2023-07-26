@@ -1,19 +1,14 @@
 import numpy as np
 
-from coordinate_system import CoordinateSystem
-from coordinate_system import CartesianCoordinateSystem
-
 
 class Simulation:
   
   def __init__(self,
     rocket_components, # list of rocket components (typically, there will be just one element to start)
-    coordinate_system: CoordinateSystem=CartesianCoordinateSystem, # Coordinate system to use
     time_max=100, # time that this simulation will cover (affects number of iterations)
     time_step=1 # the duration that each iteration will cover
     ) -> None:
-    
-    self.coordinate_system = coordinate_system
+
     self.rocket_components = rocket_components
     # self.simulation_log = SimulationLog()
     self.time = 0 # unit seconds
@@ -42,9 +37,6 @@ class Simulation:
 def main():
   # Define rocket component
   # rocket_component = RocketComponentHead(args)
-
-  # Choose coordinate system
-  coordinate_system = CartesianCoordinateSystem
 
   # Create Simulation
   # simulation = Simulation(rocket_component, coordinate_system)
