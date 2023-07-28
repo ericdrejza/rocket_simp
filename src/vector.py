@@ -69,3 +69,69 @@ class Vector:
 
     self.x = self.r * math.cos(self.theta)
     self.y = self.r * math.sin(self.theta)
+
+
+  def __add__(self, other: object):
+    if isinstance(other, Vector):
+      x_resultant = self.x + other.x
+      y_resultant = self.x + other.x
+      return Vector(x_resultant, y_resultant)
+    else:
+      raise NotImplementedError('Addition with a Vector is only defined for\
+                                 another Vector, not for type '
+                                , str(type(other)), '.')
+
+
+  def __sub__(self, other: object):
+    if isinstance(other, Vector):
+      x_resultant = self.x + other.x
+      y_resultant = self.x + other.x
+      return Vector(x_resultant, y_resultant)
+    else:
+      raise NotImplementedError('Subtraction from a Vector is only defined for\
+                                 another Vector, not for type '
+                                , str(type(other)), '.')
+
+
+  def __mul__(self, other: object):
+    pass
+
+
+  def __truediv__(self, other: object):
+    pass
+
+
+  def __floordiv__(self, other: object):
+    pass
+
+
+  def __mod__(self, other: object):
+    pass
+
+
+  def __pow__(self, other: object):
+    pass
+
+
+  def __lt__(self, other: object):
+    pass
+
+
+  def __gt__(self, other: object):
+    pass
+
+
+  def __le__(self, other: object):
+    pass
+
+
+  def __ge__(self, other: object):
+    pass
+
+
+  def __eq__(self, other: object):
+    pass
+
+
+  def __ne__(self, other: object):
+    pass
