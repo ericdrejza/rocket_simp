@@ -16,8 +16,6 @@ class Vector2:
     theta : float
       value of theta (in radians) in polar coordinate system
   """
-
-
   def __init__(self, *, x=None, y=None, z=None, r=None, theta=None):
     """
     Initializes a vector from either cartesian or polar coordinate 
@@ -36,19 +34,18 @@ class Vector2:
       theta : float
         value of theta (in radians) in polar coordinate system
     """
-
     if x is not None or y is not None:
       if r is not None or theta is not None:
-        raise ValueError('Cannot define a Vector by Rectangualr and Polar \
-                         coordinate systems.  Use x and y or r and theta')
+        raise ValueError('Cannot define a Vector by Rectangualr and Polar ' + 
+                         'coordinate systems.  Use x and y or r and theta')
       else:
         self.x = x
         self.y = y
-        self.update_polar(x=self.x, y=self.y)
+        self.update_polar()
     elif r is not None and theta is not None:
       self.r = r
       self.theta = theta
-      self.update_cartesian(self.r, self.theta)
+      self.update_cartesian()
     else:
       raise ValueError('Define a Vector by either x and y or r and theta')
 
@@ -58,9 +55,8 @@ class Vector2:
     Creates or updates polar coordinate attributes using cartesian coordinate
     attributes
     """
-
-    self.r = math.tan(self.y/self.x)
-    self.theta = math.atan2(self.y/self.x)
+    self.r = math.sqrt(self.y ** 2 + self.x ** 2)
+    self.theta = math.atan2(self.y, self.x)
 
 
   def update_cartesian(self) -> None:
@@ -68,7 +64,6 @@ class Vector2:
     Creates or updates cartesian coordinate attributes using polar coordinate
     attributes
     """
-
     self.x = self.r * math.cos(self.theta)
     self.y = self.r * math.sin(self.theta)
 
@@ -119,7 +114,6 @@ class Vector2:
       cross : float
         resultant scalar value of above equation
     """
-    
     cross = (self.x * other.y) - (self.y * other.x)
 
     return cross
@@ -130,32 +124,60 @@ class Vector2:
     Adds two vectors together by their respective components
 
     Parameters:
-      self : Vector2
       other : object
+        the object to be added to self. if other is not an instance of Vector2
+        raise an error
+
+    Returns:
+      new Vector2
+        resultant Vector2 after adding respective x and y components
     """
     if isinstance(other, Vector2):
       x_resultant = self.x + other.x
-      y_resultant = self.x + other.x
-      return Vector2(x_resultant, y_resultant)
+      y_resultant = self.y + other.y
+      return Vector2(x=x_resultant, y=y_resultant)
     else:
-      raise NotImplementedError('Addition with a Vector2 is only defined for\
-                                 another Vector2, not for type '
-                                , str(type(other)), '.')
+      raise NotImplementedError('Addition with a Vector2 is only defined for ' 
+                                + 'another Vector2, not for type ' 
+                                + str(type(other).__name__), '.')
 
 
   def __sub__(self, other: object) -> 'Vector2':
+    """
+    Subtracts two vectors by their respective components
+
+    Parameters:
+      other : object
+        the object to be subtracted from self. if other is not an instance of 
+        Vector2 raise an error
+
+    Returns:
+      new Vector2
+        resultant Vector2 after subtracting respective x and y components
+    """
     if isinstance(other, Vector2):
-      x_resultant = self.x + other.x
-      y_resultant = self.x + other.x
-      return Vector2(x_resultant, y_resultant)
+      x_resultant = self.x - other.x
+      y_resultant = self.y - other.y
+      return Vector2(x=x_resultant, y=y_resultant)
     else:
-      raise NotImplementedError('Subtraction from a Vector2 is only defined\
-                                 for another Vector2, not for type '
-                                , str(type(other)), '.')
+      raise NotImplementedError('Subtraction from a Vector2 is only defined ' +
+                                'for another Vector2, not for type '+ 
+                                str(type(other).__name__), '.')
 
 
   def __mul__(self, other: object) -> 'Vector2':
-    pass
+    if isinstance(other, Vector2):
+      raise TypeError('Multiplication for two 2D vectors is not defined. Use '+
+                      'vector2_a.dot(vector2_b) or vector2_a.cross(vector2_b) '
+                      + 'for dot or cross product respectively.')
+    elif isinstance(other, float) or isinstance(other, int):
+      x_resultant = self.x * other
+      y_resultant = self.y * other
+      return Vector2(x=x_resultant, y=y_resultant)
+    else:
+      raise TypeError('Multiplication with a Vector2 is only defined ' +
+                      'for scalar values (int or float), not for type ' +
+                      str(type(other).__name__) + '.')
 
 
   def __truediv__(self, other: object) -> 'Vector2':

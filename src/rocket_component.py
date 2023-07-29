@@ -2,7 +2,7 @@ from abc import ABC
 import math
 
 from atmosphere import Atmosphere
-from position import CartPosition
+from position import CartesianPosition
 from rocket_log import RocketLog
 from vector import Vector2, Vector3
 import scipy.integrate as integrate
@@ -10,7 +10,7 @@ import scipy.integrate as integrate
 
 class RocketComponent(ABC):
   
-  def __init__(self, alpha: float, position: CartPosition, velocity: Vector2) -> None:
+  def __init__(self, alpha: float, position: CartesianPosition, velocity: Vector2) -> None:
     super().__init__()
 
     # Position
