@@ -1,5 +1,6 @@
 from logging import Logger
 import numpy as np
+import os
 
 from rocket_component import RocketComponent, HeadRocketComponent
 
@@ -32,8 +33,8 @@ class Simulation:
   
 
   def log_rockets(self) -> None:
-    map(lambda rocket_component: rocket_component.log(self.time),
-      self.rocket_components)
+    list(map(lambda rocket_component: rocket_component.log(self.time),
+      self.rocket_components))
 
 
   def update(self) -> None:
@@ -41,12 +42,12 @@ class Simulation:
     Update the objects in the simulation
     """
     # Call update function on each RocketComponent
-    map(lambda rocket_component:
-      rocket_component.update(self.time, self.time_step, log=True),
-      self.rocket_components)
+    list(map(lambda rocket_component:
+      rocket_component.update(self.time, self.time_step),
+      self.rocket_components))
 
 
-  def start(self) -> None:
+  def run(self) -> None:
     """
     Start the simulation
     """
@@ -54,24 +55,33 @@ class Simulation:
     self.log_rockets()
 
     # Loop through times
-    for time in np.arange((self.time + self.time_step), (self.time_max + self.time_step), self.time_step):
+    for time in np.arange((self.time + self.time_step),
+      (self.time_max + self.time_step), self.time_step):
       self.time = time
+      print(self.time)
       self.update()
-      
 
+      self.rocket_components[0].rocket_log.data.to_csv(
+          os.path.join(os.path.dirname(__file__),'sim.log'))
+      
+      for rocket_component in self.rocket_components:
+        rocket_component.print(),
+    
 
 
 ### MAIN ###
 def main():
   # Build rocket component
-  head_rocket_component = HeadRocketComponent()
-  return
-
+  head_rocket_component = HeadRocketComponent(0)
+  # head_rocket_component.log(0)
+  head_rocket_component.print()
+  
   # Create simulation
   simulation = Simulation(head_rocket_component)
 
   # Start simulation
-  simulation.start()
+  simulation.run()
+  return
 
 
 
