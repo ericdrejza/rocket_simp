@@ -34,7 +34,6 @@ class Vector:
       theta : float
         value of theta (in radians) in polar coordinate system
     """
-
     if x is not None or y is not None:
       if r is not None or theta is not None:
         raise ValueError('Cannot define a Vector by Rectangualr and Polar \
@@ -56,7 +55,6 @@ class Vector:
     Creates or updates polar coordinate attributes using cartesian coordinate
     attributes
     """
-
     self.r = math.tan(self.y/self.x)
     self.theta = math.atan2(self.y/self.x)
 
@@ -66,6 +64,5 @@ class Vector:
     Creates or updates cartesian coordinate attributes using polar coordinate
     attributes
     """
-
     self.x = self.r * math.cos(self.theta)
     self.y = self.r * math.sin(self.theta)
