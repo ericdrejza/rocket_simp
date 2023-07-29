@@ -4,13 +4,13 @@ import math
 from atmosphere import Atmosphere
 from position import CartPosition
 from rocket_log import RocketLog
-from vector import Vector
+from vector import Vector2, Vector3
 import scipy.integrate as integrate
 
 
 class RocketComponent(ABC):
   
-  def __init__(self, alpha: float, position: CartPosition, velocity: Vector) -> None:
+  def __init__(self, alpha: float, position: CartPosition, velocity: Vector2) -> None:
     super().__init__()
 
     # Position
@@ -55,7 +55,7 @@ class RocketComponent(ABC):
 
 
   # Calculate Forces
-  def calc_drag_force(self) -> Vector:
+  def calc_drag_force(self) -> Vector2:
     """
     calculate the drag force acting on the rocket
     :return float: drag
@@ -64,10 +64,10 @@ class RocketComponent(ABC):
     drag_coefficient = 0.75  # approximation, replace later
     drag_area = math.pi * (self.width / 2)**2
     drag = drag_coefficient * self.atmosphere.density * drag_area * self.velocity ** 2 / 2
-    return Vector(r=drag, theta=self.alpha + math.pi)
+    return Vector2(r=drag, theta=self.alpha + math.pi)
 
 
-  def calc_gravity_force(self) -> Vector:
+  def calc_gravity_force(self) -> Vector2:
     """
     calculate the gravitational force acting on the rocket
     :return float: gravity
@@ -76,10 +76,10 @@ class RocketComponent(ABC):
     mass_earth = 5.9722 * 10**24  # kg
     radius_earth = 6.371 * 10**6  # m
     gravity = gravitational_constant * mass_earth * self.calc_mass(1) / (radius_earth + self.y_position**2)
-    return Vector(r=gravity, theta=3 * math.pi / 2)
+    return Vector2(r=gravity, theta=3 * math.pi / 2)
 
 
-  def calc_lift_force(self) -> Vector:
+  def calc_lift_force(self) -> Vector2:
     """
     calculate the lift force acting on the rocket
     :return float: lift
@@ -88,10 +88,10 @@ class RocketComponent(ABC):
     lift_coefficient = 1.5 #approximation, replace later, assume vertical launch
     lift_area = self.length * self.width
     lift = lift_coefficient * self.atmosphere.density * lift_area * self.velocity ** 2 / 2
-    return Vector(r=lift, theta=math.pi/2 + self.alpha)
+    return Vector2(r=lift, theta=math.pi/2 + self.alpha)
 
 
-  def calc_thrust_force(self) -> Vector:
+  def calc_thrust_force(self) -> Vector2:
     """
     calculate the thrust force acting on the rocket
     :return float: thrust
@@ -100,10 +100,10 @@ class RocketComponent(ABC):
     momentum_thrust = self.fuel_flow_rate * self.velocity_exhaust
     pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * self.area_exhaust
     thrust_force = momentum_thrust + pressure_thrust
-    return Vector(r=thrust_force, theta=self.alpha)
+    return Vector2(r=thrust_force, theta=self.alpha)
 
 
-  def sum_forces(self) -> Vector:
+  def sum_forces(self) -> Vector2:
     """
     Returns the sum of force in both the x and y directions
     :return Vector object: the resultant force vector
@@ -112,10 +112,10 @@ class RocketComponent(ABC):
     sum_forces_x = self.thrust_force.x + self.lift_force.x + self.drag_force.x + self.gravity_force.x
     sum_forces_y = self.thrust_force.y + self.lift_force.y + self.drag_force.y + self.gravity_force.y
 
-    return Vector(x=sum_forces_x, y=sum_forces_y)
+    return Vector2(x=sum_forces_x, y=sum_forces_y)
 
 
-  def calc_new_acceleration(self, force: Vector, time_step: float) -> Vector:
+  def calc_new_acceleration(self, force: Vector2, time_step: float) -> Vector2:
     """
     From the sum of forces, solves for acceleration
     :param Vector force: resultant force acting on the rocket component
@@ -126,10 +126,10 @@ class RocketComponent(ABC):
     a_x = force.x / self.mass
     a_y = force.y / self.mass
 
-    return Vector(x=a_x, y=a_y)
+    return Vector2(x=a_x, y=a_y)
 
 
-  def calc_new_velocity(self, acceleration: Vector, time_step: float) -> Vector:
+  def calc_new_velocity(self, acceleration: Vector2, time_step: float) -> Vector2:
     """
     From the acceleration, solves for velocity
     :param Vector acceleration: acceleration of the rocket component at this stage
@@ -140,10 +140,10 @@ class RocketComponent(ABC):
     v_x = self.velocity.x + acceleration.x * time_step
     v_y = self.velocity.y + acceleration.y * time_step
 
-    return Vector(x=v_x, y=v_y)
+    return Vector2(x=v_x, y=v_y)
 
 
-  def calc_new_position(self, velocity: Vector, time_step: float) -> Vector:
+  def calc_new_position(self, velocity: Vector2, time_step: float) -> Vector2:
     """
     From the velocity, solves for position
     :param Vector velocity: velocity of the rocket component at this stage
@@ -154,7 +154,7 @@ class RocketComponent(ABC):
     p_x = self.position.x + velocity.x * time_step
     p_y = self.position.y + velocity.y * time_step
 
-    return Vector(x=p_x, y=p_y)
+    return Vector2(x=p_x, y=p_y)
 
 
 # Concrete Components
