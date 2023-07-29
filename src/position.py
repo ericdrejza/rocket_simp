@@ -6,7 +6,6 @@ class Position(ABC):
   def __init__(self, *args) -> None:
     pass
 
-
 class CartesianPosition(Position):
   """
   This class represents a position using the cartesian coordinate system
@@ -29,6 +28,9 @@ class CartesianPosition(Position):
     theta = math.tan(self.y / self.x)
     return r, theta
 
+  
+  def __str__(self):
+    return f'({self.x}, {self.y})'
 
 class SphericalPosition(Position):
   """
