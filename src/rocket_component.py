@@ -1,22 +1,31 @@
 from abc import ABC, abstractmethod
+import importlib
 import math
+import sys
 
 import scipy.integrate as integrate
 
 from atmosphere import Atmosphere
 from position import CartesianPosition
-from rocket_log import RocketLog
+import rocket_log as rl
 from vector import Vector
 
 
 class RocketComponent(ABC):
   
-  def __init__(self, id, position: CartesianPosition(0, 0),
-    velocity: Vector(x=0, y=0), keep_log=True) -> None:
+  def __init__(self, id, alpha=(math.pi / 2),
+    position:CartesianPosition=CartesianPosition(0, 0),
+    velocity:Vector=Vector(x=0, y=0), keep_log=True) -> None:
     
+    self.id = id
+
     # Spatial Properties
+    self.alpha = alpha
     self.position = position  # m
     self.velocity = velocity
+
+    # Atmosphere Object
+    self.atmosphere = Atmosphere(self.position.y)
 
     # Mass Properties (Falcon 9 ex.)
     self.mass_fuel = 375000  # kg
@@ -36,11 +45,8 @@ class RocketComponent(ABC):
     self.lift_force = self.calc_lift_force()  # N
     self.thrust_force = self.calc_thrust_force()  # N
 
-    # Atmosphere Object
-    self.atmosphere = Atmosphere(self.position_y)
-
     # Rocket Log
-    self.rocket_log = RocketLog() if keep_log else None
+    self.rocket_log = rl.RocketLog() if keep_log else None
 
 
   # Calculate Forces
@@ -50,8 +56,9 @@ class RocketComponent(ABC):
     :return float: drag
     """
     drag_coefficient = 0.75  # approximation, replace later
-    drag_area = math.pi * (self.width / 2)**2
-    drag = drag_coefficient * self.atmosphere.density * drag_area * self.velocity ** 2 / 2
+    drag_area = math.pi * (self.width / 2) ** 2
+    drag = drag_coefficient * self.atmosphere.density * drag_area * \
+      self.velocity.r ** 2 / 2
     return Vector(r=drag, theta=self.alpha + math.pi)
 
 
@@ -60,11 +67,11 @@ class RocketComponent(ABC):
     calculate the gravitational force acting on the rocket
     :return float: gravity
     """
-    gravitational_constant = 6.674 * 10**-11  # m^3/kg*s
-    mass_earth = 5.9722 * 10**24  # kg
-    radius_earth = 6.371 * 10**6  # m
+    gravitational_constant = 6.674 * (10 ** -11)  # m^3/kg*s
+    mass_earth = 5.9722 * (10 ** 24)  # kg
+    radius_earth = 6.371 * (10 ** 6)  # m
     gravity = gravitational_constant * mass_earth * self.get_total_mass() \
-      / (radius_earth + self.y_position**2)
+      / (radius_earth + self.position.y ** 2)
     return Vector(r=gravity, theta=3 * math.pi / 2)
 
 
@@ -75,7 +82,8 @@ class RocketComponent(ABC):
     """
     lift_coefficient = 1.5 #approximation, replace later, assume vertical launch
     lift_area = self.length * self.width
-    lift = lift_coefficient * self.atmosphere.density * lift_area * self.velocity ** 2 / 2
+    lift = lift_coefficient * self.atmosphere.density * lift_area *\
+      self.velocity.r ** 2 / 2
     return Vector(r=lift, theta=math.pi/2 + self.alpha)
   
 
@@ -105,7 +113,8 @@ class RocketComponent(ABC):
     return Vector(x=a_x, y=a_y)
 
 
-  def calc_new_position(self, velocity: Vector, time_step: float) -> CartesianPosition:
+  def calc_new_position(self, velocity: Vector, time_step: float) \
+    -> CartesianPosition:
     """
     From the velocity, solves for position
     :param Vector velocity: velocity of the rocket component at this stage
@@ -117,7 +126,8 @@ class RocketComponent(ABC):
     return CartesianPosition(p_x, p_y)
   
 
-  def calc_new_velocity(self, acceleration: Vector, time_step: float) -> Vector:
+  def calc_new_velocity(self, acceleration: Vector, time_step: float) \
+    -> Vector:
     """
     From the acceleration, solves for velocity
     :param Vector acceleration: acceleration of the rocket component at this stage
@@ -135,7 +145,8 @@ class RocketComponent(ABC):
     :return float: thrust
     """
     momentum_thrust = self.fuel_flow_rate * self.velocity_exhaust
-    pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * self.area_exhaust
+    pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * \
+      self.area_exhaust
     thrust_force = momentum_thrust + pressure_thrust
     return Vector(r=thrust_force, theta=self.alpha)
 
@@ -172,8 +183,10 @@ class RocketComponent(ABC):
     Returns the sum of force in both the x and y directions
     :return Vector object: the resultant force vector
     """
-    sum_forces_x = self.thrust_force.x + self.lift_force.x + self.drag_force.x + self.gravity_force.x
-    sum_forces_y = self.thrust_force.y + self.lift_force.y + self.drag_force.y + self.gravity_force.y
+    sum_forces_x = self.thrust_force.x + self.lift_force.x + \
+      self.drag_force.x + self.gravity_force.x
+    sum_forces_y = self.thrust_force.y + self.lift_force.y + \
+      self.drag_force.y + self.gravity_force.y
 
     return Vector(x=sum_forces_x, y=sum_forces_y)
 
@@ -194,7 +207,7 @@ class RocketComponent(ABC):
     force = self.sum_forces()
 
     # Calculate new acceleration vector
-    acceleration = self.calc_acceleration(force)
+    acceleration = self.calc_acceleration(force, time_step)
 
     # Set new values for velocity and position
     self.velocity = self.calc_new_velocity(acceleration, time_step)
@@ -215,8 +228,8 @@ class RocketComponent(ABC):
 # Concrete Components
 class HeadRocketComponent(RocketComponent):
 
-  def __init__(self) -> None:
-    super().__init__()
+  def __init__(self, *args, **kwargs) -> None:
+    super().__init__(*args, **kwargs)
 
 
   def update(self, time: float, time_step: float, lazy=False) -> None:
@@ -288,13 +301,25 @@ class RocketComponentDecorator(RocketComponent):
     if not lazy:
       super().update(time, time_step)
     if self.rocket_component is not None:
+      # Have child copy self properties
+      self.rocket_component.atmosphere = self.atmosphere
+      self.rocket_component.position = self.position
+      self.rocket_component.velocity = self.velocity
+      self.rocket_component.drag_force = self.drag_force
+      self.rocket_component.thrust_force = self.thrust_force
+      self.rocket_component.gravity_force = self.gravity_force
+      self.rocket_component.lift_force = self.lift_force
+
       self.rocket_component.update(time, time_step, lazy=lazy)
 
 
 
 ### MAIN ###
 def main():
-  pass
+  head = HeadRocketComponent(0)
+  head.print()
+  head.update(1, 1)
+  head.print()
 
 if __name__ == '__main__':
   main()
