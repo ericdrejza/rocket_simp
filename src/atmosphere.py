@@ -16,7 +16,7 @@ class Atmosphere:
     self.update_atmosphere(altitude)
 
 
-  def update_atmosphere(self, altitude: float) -> None:
+  def update(self, altitude: float) -> None:
     """
     :param altitude: float
     """
