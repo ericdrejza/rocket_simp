@@ -2,6 +2,8 @@ from logging import Logger
 import numpy as np
 import os
 
+import pandas as pd
+
 from rocket_component import RocketComponent, HeadRocketComponent
 
 
@@ -37,6 +39,32 @@ class Simulation:
       self.rocket_components))
 
 
+  def print_rocket_components(self):
+    for rocket_component in self.rocket_components:
+      print(f'{self.time}: {rocket_component.string_info()}')
+
+
+  def run(self) -> None:
+    """
+    Start the simulation
+    """
+    # Create initial rows for each rocket component's log
+    self.log_rockets()
+    self.print_rocket_components()
+
+    # Loop through times
+    for time in np.arange((self.time + self.time_step),
+      (self.time_max + self.time_step), self.time_step):
+      self.time = time
+      self.update()
+
+      self.rocket_components[0].rocket_log.data.to_json(
+          os.path.join(os.path.dirname(__file__),'sim.log'),
+          indent=4, orient='records')
+      
+      self.print_rocket_components()
+
+
   def update(self) -> None:
     """
     Update the objects in the simulation
@@ -47,37 +75,13 @@ class Simulation:
       self.rocket_components))
 
 
-  def run(self) -> None:
-    """
-    Start the simulation
-    """
-    # Create initial rows for each rocket component's log
-    self.log_rockets()
-
-    # Loop through times
-    for time in np.arange((self.time + self.time_step),
-      (self.time_max + self.time_step), self.time_step):
-      self.time = time
-      print(self.time)
-      self.update()
-
-      self.rocket_components[0].rocket_log.data.to_csv(
-          os.path.join(os.path.dirname(__file__),'sim.log'))
-      
-      for rocket_component in self.rocket_components:
-        rocket_component.print(),
-    
-
-
 ### MAIN ###
 def main():
   # Build rocket component
   head_rocket_component = HeadRocketComponent(0)
-  # head_rocket_component.log(0)
-  head_rocket_component.print()
   
   # Create simulation
-  simulation = Simulation(head_rocket_component)
+  simulation = Simulation(head_rocket_component, time_max=100)
 
   # Start simulation
   simulation.run()
