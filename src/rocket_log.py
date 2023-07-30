@@ -16,7 +16,7 @@ class RocketLog:
       'velocity_y', # y value of velocity
       'velocity_z',
       'velocity_r', # magnitude of velocity
-      'velocity_alpha', # angle of velocity
+      'velocity_theta', # angle of velocity
       'mass_fuel', # mass of fuel
       'mass_structure', # mass of structure
       'drag_force_x',
@@ -77,15 +77,15 @@ class RocketLog:
       'lift_force_y': rocket_component.lift_force.y,
       'lift_force_r': rocket_component.lift_force.r,
       'lift_force_theta': rocket_component.lift_force.theta,
-      'thrust_force_x': rocket_component.thrust_force.r,
-      'thrust_force_y': rocket_component.thrust_force.r,
+      'thrust_force_x': rocket_component.thrust_force.x,
+      'thrust_force_y': rocket_component.thrust_force.y,
       'thrust_force_r': rocket_component.thrust_force.r,
-      'thrust_force_theta': rocket_component.thrust_force.r,
+      'thrust_force_theta': rocket_component.thrust_force.theta,
       'atm_density': rocket_component.atmosphere.density,
       'atm_gravity': rocket_component.atmosphere.gravity,
       'atm_pressure': rocket_component.atmosphere.pressure,
       'atm_temperature': rocket_component.atmosphere.temperature,
       'atm_viscosity': rocket_component.atmosphere.viscosity
     }])
-    self.data.add(data)
+    self.data = pd.concat([self.data, data.round(3)], ignore_index=True)
     return data
