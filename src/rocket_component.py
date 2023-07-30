@@ -37,7 +37,7 @@ class RocketComponent(ABC):
     # Engine Properties
     self.area_exhaust = math.pi * (self.width / 2) ** 2
     self.pressure_exhaust = 70927.5  # N/m^2
-    self.velocity_exhaust = 3000  # m/s
+    self.velocity_exhaust = 3000 * 9 # m/s
 
     # Forces
     self.drag_force = self.calc_drag_force()  # N
@@ -53,7 +53,7 @@ class RocketComponent(ABC):
   def calc_drag_force(self) -> Vector:
     """
     calculate the drag force acting on the rocket
-    :return float: drag
+    :return Vector: drag
     """
     drag_coefficient = 0.75  # approximation, replace later
     drag_area = math.pi * (self.width / 2) ** 2
@@ -65,26 +65,39 @@ class RocketComponent(ABC):
   def calc_gravity_force(self) -> Vector:
     """
     calculate the gravitational force acting on the rocket
-    :return float: gravity
+    :return Vector: gravity
     """
     gravitational_constant = 6.674 * (10 ** -11)  # m^3/kg*s
     mass_earth = 5.9722 * (10 ** 24)  # kg
     radius_earth = 6.371 * (10 ** 6)  # m
     gravity = gravitational_constant * mass_earth * self.get_total_mass() \
-      / (radius_earth + self.position.y ** 2)
+      / ((radius_earth + self.position.y) ** 2)
     return Vector(r=gravity, theta=3 * math.pi / 2)
 
 
   def calc_lift_force(self) -> Vector:
     """
     calculate the lift force acting on the rocket
-    :return float: lift
+    :return Vector: lift
     """
-    lift_coefficient = 1.5 #approximation, replace later, assume vertical launch
+    # lift_coefficient = 1.5 #approximation, replace later, assume vertical launch
+    lift_coefficient = 0 # temp to handle vertical launch
     lift_area = self.length * self.width
-    lift = lift_coefficient * self.atmosphere.density * lift_area *\
+    lift = lift_coefficient * self.atmosphere.density * lift_area * \
       self.velocity.r ** 2 / 2
     return Vector(r=lift, theta=math.pi/2 + self.alpha)
+  
+
+  def calc_thrust_force(self) -> Vector:
+    """
+    calculate the thrust force acting on the rocket
+    :return float: thrust
+    """
+    momentum_thrust = self.fuel_flow_rate * self.velocity_exhaust
+    pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * \
+      self.area_exhaust
+    thrust_force = momentum_thrust + pressure_thrust
+    return Vector(r=thrust_force, theta=self.alpha)
   
 
   def calc_new_fuel_mass(self, time_step) -> float:
@@ -137,18 +150,6 @@ class RocketComponent(ABC):
     v_x = self.velocity.x + acceleration.x * time_step
     v_y = self.velocity.y + acceleration.y * time_step
     return Vector(x=v_x, y=v_y)
-  
-  
-  def calc_thrust_force(self) -> Vector:
-    """
-    calculate the thrust force acting on the rocket
-    :return float: thrust
-    """
-    momentum_thrust = self.fuel_flow_rate * self.velocity_exhaust
-    pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * \
-      self.area_exhaust
-    thrust_force = momentum_thrust + pressure_thrust
-    return Vector(r=thrust_force, theta=self.alpha)
 
 
   def get_total_mass(self):
@@ -170,12 +171,12 @@ class RocketComponent(ABC):
     return None
   
 
-  def print(self) -> None:
+  def string_info(self) -> None:
     """
     Print information about the rocket component
     """
-    rocket_string = f'{self.id}, {self.position}'
-    print(rocket_string)
+    rocket_string = f'{self.id}, {self.position}, ({self.velocity.x}, {self.velocity.y})'
+    return rocket_string
   
 
   def sum_forces(self) -> Vector:
