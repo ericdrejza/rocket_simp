@@ -30,7 +30,7 @@ class CartesianPosition(Position):
 
   
   def __str__(self):
-    return f'({self.x}, {self.y})'
+    return f'({round(self.x, 3)}, {round(self.y, 3)})'
 
 class SphericalPosition(Position):
   """

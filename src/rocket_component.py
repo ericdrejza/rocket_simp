@@ -180,7 +180,8 @@ class RocketComponent(ABC):
     """
     Print information about the rocket component
     """
-    rocket_string = f'{self.id}, {self.position}, ({self.velocity.x}, {self.velocity.y})'
+    rocket_string = f'{self.id}, {self.position}, ' + \
+      f'({round(self.velocity.x, 3)}, {round(self.velocity.y, 3)})'
     return rocket_string
   
 
