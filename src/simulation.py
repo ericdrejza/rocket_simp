@@ -1,6 +1,5 @@
 from logging import Logger
 import numpy as np
-import os
 
 import pandas as pd
 
@@ -58,9 +57,8 @@ class Simulation:
       self.time = time
       self.update()
 
-      self.rocket_components[0].rocket_log.data.to_json(
-          os.path.join(os.path.dirname(__file__),'sim.log'),
-          indent=4, orient='records')
+      for rocket_component in self.rocket_components:
+        rocket_component.output_log()
       
       self.print_rocket_components()
 

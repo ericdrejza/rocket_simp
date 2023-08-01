@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
-import importlib
 import math
-import sys
+import os
 
 import scipy.integrate as integrate
 
@@ -171,6 +170,12 @@ class RocketComponent(ABC):
     return None
   
 
+  def output_log(self):
+    self.rocket_log.data.to_json(
+      os.path.join(os.path.dirname(__file__), f'rocket_component_{self.id}.log'),
+      indent=4, orient='records')
+
+
   def string_info(self) -> None:
     """
     Print information about the rocket component
@@ -270,6 +275,12 @@ class RocketComponentDecorator(RocketComponent):
       return super().get_total_mass()
     else:
       return super().get_total_mass() + self.rocket_component.get_total_mass()
+
+
+  def output_log(self):
+    super().output_log()
+    if self.rocket_component:
+      self.rocket_component.output_log()
 
 
   def print(self):
