@@ -171,9 +171,8 @@ class Vector2:
                       'vector2_a.dot(vector2_b) or vector2_a.cross(vector2_b) '
                       + 'for dot or cross product respectively.')
     elif isinstance(other, float) or isinstance(other, int):
-      x_resultant = self.x * other
-      y_resultant = self.y * other
-      return Vector2(x=x_resultant, y=y_resultant)
+      r_resultant = self.r * other
+      return Vector2(r=r_resultant, theta=self.theta)
     else:
       raise TypeError('Multiplication with a Vector2 is only defined ' +
                       'for scalar values (int or float), not for type ' +
@@ -181,19 +180,55 @@ class Vector2:
 
 
   def __truediv__(self, other: object) -> 'Vector2':
-    pass
+    if isinstance(other, Vector2):
+      raise TypeError('Division for two 2D vectors is not defined. Use '+
+                      'vector2_a.dot(vector2_b) or vector2_a.cross(vector2_b) '
+                      + 'for dot or cross product respectively.')
+    elif isinstance(other, float) or isinstance(other, int):
+      r_resultant = self.r / other
+      return Vector2(r=r_resultant, theta=self.theta)
+    else:
+      raise TypeError('Division with a Vector2 is only defined ' +
+                      'for scalar values (int or float), not for type ' +
+                      str(type(other).__name__) + '.')
 
 
   def __floordiv__(self, other: object) -> 'Vector2':
-    pass
+    if isinstance(other, Vector2):
+      raise TypeError('Integer Division for two 2D vectors is not defined. '+
+                      'Use vector2_a.dot(vector2_b) or vector2_a.cross(vector'+
+                      '2_b) for dot or cross product respectively.')
+    elif isinstance(other, float) or isinstance(other, int):
+      r_resultant = self.r // other
+      return Vector2(r=r_resultant, theta=self.theta)
+    else:
+      raise TypeError('Integer Division with a Vector2 is only defined ' +
+                      'for scalar values (int or float), not for type ' +
+                      str(type(other).__name__) + '.')
 
 
   def __mod__(self, other: object) -> 'Vector2':
-    pass
+    if isinstance(other, Vector2):
+      raise TypeError('Modulo for two 2D vectors is not defined.')
+    elif isinstance(other, float) or isinstance(other, int):
+      r_resultant = self.r % other
+      return Vector2(r=r_resultant, theta=self.theta)
+    else:
+      raise TypeError('Modulo with a Vector2 is only defined ' +
+                      'for scalar values (int or float), not for type ' +
+                      str(type(other).__name__) + '.')
 
 
   def __pow__(self, other: object) -> 'Vector2':
-    pass
+    if isinstance(other, Vector2):
+      raise TypeError('Exponents for two 2D vectors is not defined.')
+    elif isinstance(other, float) or isinstance(other, int):
+      r_resultant = self.r ** other
+      return Vector2(r=r_resultant, theta=self.theta)
+    else:
+      raise TypeError('Exponents with a Vector2 is only defined ' +
+                      'for scalar values (int or float), not for type ' +
+                      str(type(other).__name__) + '.')
 
 
   def __lt__(self, other: object):
