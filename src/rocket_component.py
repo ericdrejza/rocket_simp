@@ -120,7 +120,7 @@ class RocketComponent(ABC):
     From the velocity, solves for position
     :param Vector velocity: velocity of the rocket component at this stage
     :param float time_step: time difference from one state to the next
-    :return float position: new position of the rocket after timestep
+    :return Position: new position of the rocket after time_step
     """
     p_x = self.position.x + velocity.x * time_step
     p_y = self.position.y + velocity.y * time_step
@@ -133,7 +133,7 @@ class RocketComponent(ABC):
     From the acceleration, solves for velocity
     :param Vector acceleration: acceleration of the rocket component at this stage
     :param float time_step: time difference from one state to the next
-    :return Vector velocity: new velocity of the rocket after timestep
+    :return Vector: new velocity of the rocket after timestep
     """
     v_x = self.velocity.x + acceleration.x * time_step
     v_y = self.velocity.y + acceleration.y * time_step
@@ -141,6 +141,18 @@ class RocketComponent(ABC):
 
 
   def calc_percent_thrust_and_leftover_time(self, time_step):
+    """
+    Determine what portion of thrust we can use with remaining fuel and the
+    time step.
+
+    Args:
+      time_step float: duration
+    
+    Returns:
+      tuple():
+        [0]: percentage of thrust to be used
+        [1]: the remaining time to be used for sequential operations
+    """
     percent_thrust = min(self.mass_fuel / (self.fuel_flow_rate * time_step), 1)
     leftover_time = 0
     if percent_thrust < 1:
@@ -155,7 +167,8 @@ class RocketComponent(ABC):
     Args:
       percent_thrust float: This float should be between 0 and 1
 
-    :return float: thrust
+    Return:
+      Vector: thrust force
     """
     if percent_thrust < 0 or percent_thrust > 1:
       raise ValueError
