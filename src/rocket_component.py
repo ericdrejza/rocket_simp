@@ -28,10 +28,10 @@ class RocketComponent(ABC):
 
     # Mass Properties (Falcon 9 ex.)
     self.mass_fuel = 375000  # kg
-    self.fuel_flow_rate = 1450  # kg/s
-    self.mass_structure = 25000  # kg
-    self.length = 70  # m
-    self.width = 5.2  # m
+    self.fuel_flow_rate = 1450 # kg/s
+    self.mass_structure = 25000 # kg
+    self.length = 70 # m
+    self.width = 5.2 # m
 
     # Engine Properties
     self.area_exhaust = math.pi * (self.width / 2) ** 2
@@ -46,6 +46,22 @@ class RocketComponent(ABC):
 
     # Rocket Log
     self.rocket_log = rl.RocketLog() if keep_log else None
+
+
+  def calc_acceleration(self, force: Vector, time_step: float) -> Vector:
+    """
+    From the sum of forces, solves for acceleration
+
+    Args:
+      force Vector: resultant force acting on the rocket component
+    :return Vector acceleration: acceleration of the rocket
+    """
+    mass_avg = self.get_total_mass() + \
+      ((self.calc_new_fuel_mass(time_step) - self.mass_fuel) / 2)
+
+    a_x = force.x / mass_avg
+    a_y = force.y / mass_avg
+    return Vector(x=a_x, y=a_y)
 
 
   # Calculate Forces
@@ -87,18 +103,6 @@ class RocketComponent(ABC):
     return Vector(r=lift, theta=math.pi/2 + self.alpha)
   
 
-  def calc_thrust_force(self) -> Vector:
-    """
-    calculate the thrust force acting on the rocket
-    :return float: thrust
-    """
-    momentum_thrust = self.fuel_flow_rate * self.velocity_exhaust
-    pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * \
-      self.area_exhaust
-    thrust_force = momentum_thrust + pressure_thrust
-    return Vector(r=thrust_force, theta=self.alpha)
-  
-
   def calc_new_fuel_mass(self, time_step) -> float:
     """
     Calculate the new fuel mass
@@ -106,23 +110,8 @@ class RocketComponent(ABC):
     Returns:
       float: calculated fuel mass
     """
-    return self.mass_fuel - (self.fuel_flow_rate * time_step)
-
-
-  def calc_acceleration(self, force: Vector, time_step: float) -> Vector:
-    """
-    From the sum of forces, solves for acceleration
-
-    Args:
-      force Vector: resultant force acting on the rocket component
-    :return Vector acceleration: acceleration of the rocket
-    """
-    mass_avg = self.get_total_mass() + \
-      ((self.calc_new_fuel_mass(time_step) - self.mass_fuel) / 2)
-
-    a_x = force.x / mass_avg
-    a_y = force.y / mass_avg
-    return Vector(x=a_x, y=a_y)
+    new_fuel_mass = self.mass_fuel - (self.fuel_flow_rate * time_step)
+    return max(0, new_fuel_mass)
 
 
   def calc_new_position(self, velocity: Vector, time_step: float) \
@@ -149,6 +138,34 @@ class RocketComponent(ABC):
     v_x = self.velocity.x + acceleration.x * time_step
     v_y = self.velocity.y + acceleration.y * time_step
     return Vector(x=v_x, y=v_y)
+
+
+  def calc_percent_thrust_and_leftover_time(self, time_step):
+    percent_thrust = min(self.mass_fuel / (self.fuel_flow_rate * time_step), 1)
+    leftover_time = 0
+    if percent_thrust < 1:
+      leftover_time = time_step - (percent_thrust * time_step)
+    return (percent_thrust, leftover_time)
+
+
+  def calc_thrust_force(self, percent_thrust:float=1) -> Vector:
+    """
+    Calculate the thrust force acting on the rocket
+
+    Args:
+      percent_thrust float: This float should be between 0 and 1
+
+    :return float: thrust
+    """
+    if percent_thrust < 0 or percent_thrust > 1:
+      raise ValueError
+    
+    momentum_thrust = percent_thrust * \
+      (self.fuel_flow_rate * self.velocity_exhaust)
+    pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * \
+      self.area_exhaust
+    thrust_force = momentum_thrust + pressure_thrust
+    return Vector(r=thrust_force, theta=self.alpha)
 
 
   def get_total_mass(self):
@@ -206,11 +223,14 @@ class RocketComponent(ABC):
       time float: Current time
       time_step float: The duration captured by this update
     """
+    percent_thrust, leftover_time = self.calc_percent_thrust_and_leftover_time(
+      time_step)
+
     # Calculate new force vectors
     self.drag_force = self.calc_drag_force()
     self.gravity_force = self.calc_gravity_force()
     self.lift_force = self.calc_lift_force()
-    self.thrust_force = self.calc_thrust_force()
+    self.thrust_force = self.calc_thrust_force(percent_thrust=percent_thrust)
     force = self.sum_forces()
 
     # Calculate new acceleration vector
@@ -228,7 +248,7 @@ class RocketComponent(ABC):
 
     # Log
     self.log(time)
-    return
+    return leftover_time
 
 
 
@@ -312,7 +332,7 @@ class RocketComponentDecorator(RocketComponent):
     The decorator should first determine how the rocket is moving because it
     has thrusters"""
     if not lazy:
-      super().update(time, time_step)
+      left_over_time = super().update(time, time_step)
     if self.rocket_component is not None:
       # Have child copy self properties
       self.rocket_component.atmosphere = self.atmosphere
@@ -323,7 +343,7 @@ class RocketComponentDecorator(RocketComponent):
       self.rocket_component.gravity_force = self.gravity_force
       self.rocket_component.lift_force = self.lift_force
 
-      self.rocket_component.update(time, time_step, lazy=lazy)
+      self.rocket_component.update(time, left_over_time, lazy=lazy)
 
 
 

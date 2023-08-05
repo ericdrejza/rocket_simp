@@ -37,7 +37,6 @@ class SphericalPosition(Position):
   This class represents a position using the spherical coordinate system
   """
 
-
   def __init__(self, *args) -> None:
     super().__init__(*args)
     self.r = args[0]
