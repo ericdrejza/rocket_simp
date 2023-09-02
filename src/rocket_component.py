@@ -48,23 +48,7 @@ class RocketComponent(ABC):
     self.rocket_log = rl.RocketLog() if keep_log else None
 
 
-  def calc_acceleration(self, force: Vector, time_step: float) -> Vector:
-    """
-    From the sum of forces, solves for acceleration
-
-    Args:
-      force Vector: resultant force acting on the rocket component
-    :return Vector acceleration: acceleration of the rocket
-    """
-    mass_avg = self.get_total_mass() + \
-      ((self.calc_new_fuel_mass(time_step) - self.mass_fuel) / 2)
-
-    a_x = force.x / mass_avg
-    a_y = force.y / mass_avg
-    return Vector(x=a_x, y=a_y)
-
-
-  # Calculate Forces
+  # Force Functions
   def calc_drag_force(self) -> Vector:
     """
     calculate the drag force acting on the rocket
@@ -101,8 +85,43 @@ class RocketComponent(ABC):
     lift = lift_coefficient * self.atmosphere.density * lift_area * \
       self.velocity.r ** 2 / 2
     return Vector(r=lift, theta=math.pi/2 + self.alpha)
+    
+
+  def calc_thrust_force(self, percent_thrust:float=1) -> Vector:
+    """
+    Calculate the thrust force acting on the rocket
+
+    Args:
+      percent_thrust float: This float should be between 0 and 1
+
+    Return:
+      Vector: thrust force
+    """
+    if percent_thrust < 0 or percent_thrust > 1:
+      raise ValueError
+    
+    momentum_thrust = percent_thrust * \
+      (self.fuel_flow_rate * self.velocity_exhaust)
+    pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * \
+      self.area_exhaust
+    thrust_force = momentum_thrust + pressure_thrust
+    return Vector(r=thrust_force, theta=self.alpha)
   
 
+  def sum_forces(self) -> Vector:
+    """
+    Returns the sum of force in both the x and y directions
+    :return Vector object: the resultant force vector
+    """
+    sum_forces_x = self.thrust_force.x + self.lift_force.x + \
+      self.drag_force.x + self.gravity_force.x
+    sum_forces_y = self.thrust_force.y + self.lift_force.y + \
+      self.drag_force.y + self.gravity_force.y
+
+    return Vector(x=sum_forces_x, y=sum_forces_y)
+
+
+  # Mass Functions
   def calc_new_fuel_mass(self, time_step) -> float:
     """
     Calculate the new fuel mass
@@ -114,6 +133,31 @@ class RocketComponent(ABC):
     return max(0, new_fuel_mass)
 
 
+  def get_total_mass(self):
+    """
+    Returns the total mass of this component and its children
+    """
+    mass = self.mass_fuel + self.mass_structure
+    return mass
+
+
+  # Spatial Functions
+  def calc_acceleration(self, force: Vector, time_step: float) -> Vector:
+    """
+    From the sum of forces, solves for acceleration
+
+    Args:
+      force Vector: resultant force acting on the rocket component
+    :return Vector acceleration: acceleration of the rocket
+    """
+    mass_avg = self.get_total_mass() + \
+      ((self.calc_new_fuel_mass(time_step) - self.mass_fuel) / 2)
+
+    a_x = force.x / mass_avg
+    a_y = force.y / mass_avg
+    return Vector(x=a_x, y=a_y)
+  
+  
   def calc_new_position(self, velocity: Vector, time_step: float) \
     -> CartesianPosition:
     """
@@ -140,55 +184,7 @@ class RocketComponent(ABC):
     return Vector(x=v_x, y=v_y)
 
 
-  def calc_percent_thrust_and_leftover_time(self, time_step):
-    """
-    Determine what portion of thrust we can use with remaining fuel and the
-    time step.
-
-    Args:
-      time_step float: duration
-    
-    Returns:
-      tuple():
-        [0]: percentage of thrust to be used
-        [1]: the remaining time to be used for sequential operations
-    """
-    percent_thrust = min(self.mass_fuel / (self.fuel_flow_rate * time_step), 1)
-    leftover_time = 0
-    if percent_thrust < 1:
-      leftover_time = time_step - (percent_thrust * time_step)
-    return (percent_thrust, leftover_time)
-
-
-  def calc_thrust_force(self, percent_thrust:float=1) -> Vector:
-    """
-    Calculate the thrust force acting on the rocket
-
-    Args:
-      percent_thrust float: This float should be between 0 and 1
-
-    Return:
-      Vector: thrust force
-    """
-    if percent_thrust < 0 or percent_thrust > 1:
-      raise ValueError
-    
-    momentum_thrust = percent_thrust * \
-      (self.fuel_flow_rate * self.velocity_exhaust)
-    pressure_thrust = (self.atmosphere.pressure - self.pressure_exhaust) * \
-      self.area_exhaust
-    thrust_force = momentum_thrust + pressure_thrust
-    return Vector(r=thrust_force, theta=self.alpha)
-
-
-  def get_total_mass(self):
-    """
-    Returns the total mass of this component and its children
-    """
-    mass = self.mass_fuel + self.mass_structure
-    return mass
-
-
+  # Logging Functions
   def log(self, time: float):
     """
     Log our RocketComponent with RocketLog
@@ -215,18 +211,26 @@ class RocketComponent(ABC):
     return rocket_string
   
 
-  def sum_forces(self) -> Vector:
+  # Update Functions
+  def calc_percent_thrust_and_leftover_time(self, time_step):
     """
-    Returns the sum of force in both the x and y directions
-    :return Vector object: the resultant force vector
+    Determine what portion of thrust we can use with remaining fuel and the
+    time step.
+
+    Args:
+      time_step float: duration
+    
+    Returns:
+      tuple():
+        [0]: percentage of thrust to be used
+        [1]: the remaining time to be used for sequential operations
     """
-    sum_forces_x = self.thrust_force.x + self.lift_force.x + \
-      self.drag_force.x + self.gravity_force.x
-    sum_forces_y = self.thrust_force.y + self.lift_force.y + \
-      self.drag_force.y + self.gravity_force.y
-
-    return Vector(x=sum_forces_x, y=sum_forces_y)
-
+    percent_thrust = min(self.mass_fuel / (self.fuel_flow_rate * time_step), 1)
+    leftover_time = 0
+    if percent_thrust < 1:
+      leftover_time = time_step - (percent_thrust * time_step)
+    return (percent_thrust, leftover_time)
+  
 
   def update(self, time: float, time_step: float, lazy=False) -> None:
     """
