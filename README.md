@@ -21,6 +21,12 @@ To update requirements.txt, from the repo root, run:
 
 <hr />
 
+## Run Simulation
+To run a preset simulation:
+  - `$ cd src; python3 simulation.py`
+
+<hr />
+
 ## Unit Tests
 Tests are kept in the tests/ directory.
 
